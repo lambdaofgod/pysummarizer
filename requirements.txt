@@ -1,2 +1,3 @@
 git+git://github.com/lambdaofgod/mlutil.git#egg=mlutil
 POT
+spacy
