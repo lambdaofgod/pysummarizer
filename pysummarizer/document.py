@@ -20,9 +20,13 @@ class SegmentableDocument:
     vectorizer: Callable[[str], np.ndarray] = attr.ib()
     _segmenter: Callable[[str], List[str]] = attr.ib()
 
-    def get_segment_data(self, text_segment: str) -> SegmentData:
-        weights = self.weighter(text_segment)
-        vectors = self.vectorizer(text_segment)
+    def get_segment_data(self, text_segment: str, deduplicate_tokens=True) -> SegmentData:
+        tokens = self.analyzer(text_segment)
+        if deduplicate_tokens:
+            tokens = _deduplicate(tokens)
+        cleaned_text_segment = ' '.join(tokens)
+        weights = self.weighter(cleaned_text_segment, deduplicate_tokens)
+        vectors = self.vectorizer(cleaned_text_segment)
         return SegmentData(weights, vectors)
 
     def get_segments(self):
@@ -46,3 +50,9 @@ def spacy_segmented_document_factory(spacy_nlp=None):
 
 def nltk_segmented_document_factory():
     return document_factory_from_segmenter(nltk.tokenize.sent_tokenize)
+
+
+def _deduplicate(seq):
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if not (x in seen or seen_add(x))]
