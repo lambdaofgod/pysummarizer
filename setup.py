@@ -4,13 +4,18 @@ from setuptools import setup, find_packages
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
+dependency_links = [
+    'git+https://github.com/lambdaofgod/mlutil.git#egg=mlutil'
+]
+
 
 setup(
-    name='ot-summarizer',
+    name='pysummarizer',
     version='0.1',
-    description='Extractive summarization using Optimal Transport and Word Embeddings',
-    url='https://github.com/lambdaofgod/ot-summarizer',
+    description='Extractive summarization in Python',
+    url='https://github.com/lambdaofgod/pysummarizer',
     author='Jakub Bartczuk',
     packages=find_packages(),
-    install_requires=requirements
+    install_requires=requirements,
+    dependency_links=dependency_links
 )
