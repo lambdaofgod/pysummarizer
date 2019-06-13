@@ -4,6 +4,7 @@ from setuptools import setup, find_packages
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
+
 dependency_links = [
     'git+https://github.com/lambdaofgod/mlutil.git#egg=mlutil'
 ]
