@@ -6,13 +6,13 @@ from sklearn.feature_extraction.text import VectorizerMixin
 
 class TokenWeighter:
 
-    def token_weights(self, tokens: List[str]) -> Iterable[float]:
+    def token_weights(self, tokens: List[str], deduplicate_tokens: bool) -> Iterable[float]:
         pass
 
 
 class UniformTokenWeighter(TokenWeighter):
 
-    def token_weights(self, tokens: List[str]) -> Iterable[float]:
+    def token_weights(self, tokens, deduplicate_tokens=False) -> Iterable[float]:
         n = len(tokens)
         weights = np.ones((n,))
         return weights / n
@@ -26,7 +26,7 @@ class SklearnVectorizerTokenWeighter(TokenWeighter):
             vectorizer.fit([input_text])
         self._vectorizer = vectorizer
 
-    def token_weights(self, tokens: List[str]) -> Iterable[float]:
+    def token_weights(self, tokens, deduplicate_tokens=False) -> Iterable[float]:
         glued_text = ' '.join(tokens)
         text_vector = self._vectorizer.transform([glued_text])
         weights = [text_vector[0, self._vectorizer.vocabulary_[token]] for token in tokens]

@@ -14,19 +14,19 @@ class SegmentableDocument:
     analyzer: Callable[[str], List[str]] = attr.ib()
     weighter: Callable[[str], np.ndarray] = attr.ib()
     vectorizer: Callable[[str], np.ndarray] = attr.ib()
-    _segmenter: Callable[[str], List[str]] = attr.ib()
+    segmenter: Callable[[str], List[str]] = attr.ib()
 
     def get_segment_data(self, text_segment: str, deduplicate_tokens=True) -> SegmentData:
         tokens = self.analyzer(text_segment)
         if deduplicate_tokens:
             tokens = _deduplicate(tokens)
         cleaned_text_segment = ' '.join(tokens)
-        weights = self.weighter(cleaned_text_segment, deduplicate_tokens)
+        weights = self.weighter.token_weights(cleaned_text_segment, deduplicate_tokens)
         vectors = self.vectorizer(cleaned_text_segment)
         return SegmentData(weights, vectors)
 
     def get_segments(self):
-        return self._segmenter(self.text)
+        return self.segmenter(self.text)
 
 
 def _deduplicate(seq):
